@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edge Security Copilot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Edge Security Copilot</h1>
+    <p class="subtitle">Paste logs, requests, or event descriptions for AI-powered analysis</p>
+  </header>
+
+  <main>
+    <section class="input-section">
+      <label for="log-input">Incident / Log Input</label>
+      <textarea id="log-input" rows="6" placeholder="Paste HTTP request/response, firewall logs, auth logs, or describe a suspicious event..."></textarea>
+      <div class="actions">
+        <button id="send-btn" type="button">Analyze</button>
+      </div>
+    </section>
+
+    <section class="conversation-section">
+      <h2>Conversation</h2>
+      <div id="conversation" class="conversation-pane"></div>
+    </section>
+
+    <aside class="sidebar">
+      <h3>Session</h3>
+      <p id="session-id" class="session-id">—</p>
+      <button id="new-session-btn" type="button">New Session</button>
+    </aside>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

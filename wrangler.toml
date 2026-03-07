@@ -1,0 +1,38 @@
+name = "cf_ai_edge_security"
+main = "src/worker.ts"
+compatibility_date = "2025-03-07"
+
+# Workers AI binding
+[ai]
+binding = "AI"
+
+# Durable Objects
+[[durable_objects.bindings]]
+name = "SESSION_DO"
+class_name = "SessionDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SessionDO"]
+
+# Workflows - TODO: uncomment and configure when implementing multi-step pipeline
+# [[workflows]]
+# name = "incident-analysis"
+# binding = "INCIDENT_WORKFLOW"
+# class_name = "IncidentAnalysisWorkflow"
+
+# D1 - TODO: uncomment when implementing persistent incident history
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "cf_ai_edge_security"
+# database_id = "<create via wrangler d1 create>"
+
+# Vectorize - TODO: uncomment when implementing semantic search over past incidents
+# [[vectorize]]
+# binding = "VECTORIZE_INDEX"
+# index_name = "incidents"
+
+# Static assets (pages) - Worker handles /api/* first, assets serve /, /index.html, etc.
+[assets]
+directory = "./pages"
+run_worker_first = ["/api/*"]

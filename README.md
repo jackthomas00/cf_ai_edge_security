@@ -1,85 +1,31 @@
-# Edge Secuirty Copilot
-## Summary:
-Edge Security Copilot is an AI-powered incident analysis application built on Cloudflare. It uses Workers AI for reasoning over logs and request data, Workers/Workflows for orchestration, Durable Objects for session memory, and Pages for a chat-based interface. The goal is to turn raw operational signals into fast, actionable explanations at the edge.
+# Edge Security Copilot
 
-### **Edge Security Copilot**
+Edge Security Copilot is a chat-first Cloudflare app for analyzing suspicious requests, auth logs, firewall events, and similar operational signals.
 
-A small app where a user pastes:
+## Implemented now
 
-* an HTTP request / response
-* firewall or auth logs
-* a suspicious event description
-* optionally a snippet of app config
+The current scaffold intentionally keeps the MVP small:
 
-Then the app:
+- **Pages UI** provides a simple chat interface for pasting incident data.
+- **Worker** stays thin and stateless, handling routing plus session creation.
+- **Durable Object** owns per-session chat state and conversation memory.
+- **Workers AI** is used only for inference on the current chat path.
+- **Browser session persistence** keeps the `sessionId` across refresh so the same DO-backed conversation can be rehydrated.
 
-* uses an LLM to explain what may be happening
-* classifies the issue (bot traffic, auth failure, rate limiting, config bug, suspicious request pattern, etc.)
-* stores the conversation + prior incidents as memory/state
-* can generate a suggested mitigation checklist
-* optionally runs a multi-step workflow for “analyze → summarize → recommend action”
+## Planned after MVP
 
-### Frontend
+These pieces are part of the target architecture, but are not user-facing in the current MVP:
 
-Use **Pages** for a simple chat UI with:
+- **Workflows** for a bounded multi-step analysis pipeline
+- **D1** for optional cross-session incident history
+- **Vectorize** for optional semantic retrieval over past incidents
+- richer incident memory and retrieval beyond the basic chat transcript
 
-* log input box
-* optional “incident context” box
-* conversation pane
-* saved incidents sidebar
+## MVP scope
 
-### LLM
+For v1, the primary flow is:
 
-Use **Llama 3.3 on Workers AI** for the main analysis path. Cloudflare docs and changelogs explicitly reference Llama 3.3 on Workers AI as a recommended model for agent-style apps. ([Cloudflare Docs][2])
-
-### Workflow / coordination
-* **Workflows** manages a multi-step pipeline:
-
-  1. parse incident
-  2. classify severity
-  3. retrieve prior related memory
-  4. generate explanation
-  5. generate mitigation checklist
-  6. persist result
-
-### Memory / state
-
-Best options:
-
-* **Durable Objects** for session-level state and chat memory
-* optionally **D1** for persistent incident history
-* optionally **Vectorize** if you want semantic retrieval over past incidents / notes
-
-## Recommended scope
-
-Do **not** overbuild. You want something polished enough to demo, explain, and deploy.
-
-### v1 scope
-
-Build this in 3 main flows:
-
-**1. Incident chat**
-User pastes a suspicious request or auth/network event.
-App returns:
-
-* what it likely means
-* confidence / uncertainty
-* likely root cause
-* suggested next steps
-
-**2. Memory**
-Store previous incidents and let the app say:
-
-* “This looks similar to a previous failed-login burst”
-* “This resembles a rate-limiting misconfiguration from an earlier session”
-
-**3. Workflow mode**
-Button: “Run full analysis”
-This triggers a multi-step workflow and returns:
-
-* short summary
-* detailed explanation
-* mitigation checklist
-
-
-
+1. A user pastes a suspicious request, log line, or incident description.
+2. The Worker routes the request to the session Durable Object.
+3. The Durable Object sends the chat context to Workers AI and stores the response.
+4. Refreshing the page keeps the same session and reloads the conversation.
