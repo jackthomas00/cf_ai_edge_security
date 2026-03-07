@@ -1,1 +1,1 @@
-window.EDGE_SECURITY_API_BASE = "";
+window.EDGE_SECURITY_API_BASE = "https://cf-ai-edge-security.jack-cc0.workers.dev";
