@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import type { ChatMessage, IncidentRecord, SessionState } from "./types";
-import { SYSTEM_PROMPT, buildChatMessages } from "./ai/prompts";
+import { SYSTEM_PROMPT, buildChatMessages, buildPriorIncidentContext } from "./ai/prompts";
 import { runChat } from "./ai/client";
 
 export interface SessionDOEnv {
@@ -69,7 +69,8 @@ export class SessionDO extends DurableObject<SessionDOEnv> {
       )
       .map((m) => ({ role: m.role, content: m.content }));
 
-    const messages = buildChatMessages(SYSTEM_PROMPT, history, message);
+    const priorIncidentContext = buildPriorIncidentContext(this.state.incidents, message);
+    const messages = buildChatMessages(SYSTEM_PROMPT, history, message, priorIncidentContext);
     const response = await runChat(this.env.AI, messages);
 
     this.state.messages.push(

@@ -72,6 +72,11 @@ function appendMessage(role, content) {
   pane.scrollTop = pane.scrollHeight;
 }
 
+function getErrorMessage(error, fallback) {
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+}
+
 function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
@@ -102,14 +107,32 @@ async function handleAnalyze() {
 async function handleNewSession() {
   setSessionId(null);
   renderConversation([]);
-  await ensureSession();
+  try {
+    await ensureSession();
+  } catch (error) {
+    appendMessage("assistant", `Couldn't start a new session right now. ${getErrorMessage(error, "Please try again.")}`);
+  }
 }
 
 async function init() {
-  await rehydrateSession().catch(() => {
+  try {
+    const rehydrated = await rehydrateSession();
+    if (rehydrated) return;
+
+    await ensureSession();
+  } catch (error) {
     setSessionId(null);
     renderConversation([]);
-  });
+    try {
+      await ensureSession();
+      appendMessage("assistant", "Your previous session could not be restored, so a new session was started.");
+    } catch (createError) {
+      appendMessage(
+        "assistant",
+        `Couldn't restore your session or start a new one. ${getErrorMessage(createError, getErrorMessage(error, "Please refresh and try again."))}`
+      );
+    }
+  }
 }
 
 document.getElementById("send-btn").addEventListener("click", handleAnalyze);

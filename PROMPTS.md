@@ -97,15 +97,20 @@ The UI no longer exposes workflow as a user-facing feature: pages/index.html rem
 
 ---
 
-## 3. Log Classification Prompt Engineering
+## 5. Fix memory state
 
 **Prompt:**
-<your final production prompt>
+Update the chat path so stored incidents meaningfully inform inference.
 
-**Iteration Notes:**
-- First attempt was too verbose
-- Added structured JSON output
-- Reduced hallucinated mitigations by adding constraint instructions
+Requirements:
+- Keep src/session-do.ts as the owner of session state
+- When handling chat, include a compact summary of the most relevant recent incidents in the AI context
+- Do not dump the full incident history into the prompt
+- Add a helper in src/ai/prompts.ts to inject prior incident summaries cleanly
+- Keep the AI prompt concise and avoid overstating certainty
+- Preserve the current Worker/DO boundaries
+- Make minimal changes only
+
 
 ---
 
