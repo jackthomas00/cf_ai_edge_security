@@ -113,8 +113,3 @@ Requirements:
 
 
 ---
-
-## 4. Debugging Workers AI Invocation
-
-**Prompt:**
-<your debugging prompt>

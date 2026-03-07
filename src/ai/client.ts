@@ -12,14 +12,13 @@ export async function runChat(
   messages: ChatMessage[],
   options?: { maxTokens?: number }
 ): Promise<string> {
-  return (await new Response("Temporarily offline", { status: 503 }).text());
-  // const response = await ai.run(MODEL, {
-  //   messages,
-  //   max_tokens: options?.maxTokens ?? 1024,
-  // });
+  const response = await ai.run(MODEL, {
+    messages,
+    max_tokens: options?.maxTokens ?? 1024,
+  });
 
-  // if (response && typeof response === "object" && "response" in response) {
-  //   return String((response as { response: string }).response);
-  // }
-  // return String(response ?? "");
+  if (response && typeof response === "object" && "response" in response) {
+    return String((response as { response: string }).response);
+  }
+  return String(response ?? "");
 }
