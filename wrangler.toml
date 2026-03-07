@@ -1,4 +1,4 @@
-name = "cf_ai_edge_security"
+name = "cf-ai-edge-security"
 main = "src/worker.ts"
 compatibility_date = "2025-03-07"
 
