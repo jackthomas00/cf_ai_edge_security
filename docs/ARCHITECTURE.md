@@ -2,6 +2,11 @@
 
 A clean architecture for an AI-powered incident analysis app using Cloudflare Workers, Durable Objects, Workers AI, and Workflows.
 
+Current scaffold note:
+- The frontend lives in `pages/` and is intended for deployment on Cloudflare Pages.
+- The Worker in `src/worker.ts` is the backend API only.
+- D1, Vectorize, and real Cloudflare Workflows remain deferred for the MVP.
+
 ---
 
 ## 1. High-Level Architecture

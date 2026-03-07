@@ -1,4 +1,4 @@
-const API_BASE = ""; // Relative when served with Worker; override for local dev
+const API_BASE = globalThis.EDGE_SECURITY_API_BASE ?? "";
 const SESSION_STORAGE_KEY = "edge-security-session-id";
 
 let sessionId = localStorage.getItem(SESSION_STORAGE_KEY);

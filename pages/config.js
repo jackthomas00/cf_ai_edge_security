@@ -1,0 +1,1 @@
+window.EDGE_SECURITY_API_BASE = "";

@@ -32,7 +32,5 @@ new_sqlite_classes = ["SessionDO"]
 # binding = "VECTORIZE_INDEX"
 # index_name = "incidents"
 
-# Static assets (pages) - Worker handles /api/* first, assets serve /, /index.html, etc.
-[assets]
-directory = "./pages"
-run_worker_first = ["/api/*"]
+# Frontend is intended to be deployed separately on Cloudflare Pages.
+# This Worker is the API backend only.
