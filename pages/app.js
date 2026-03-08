@@ -2,6 +2,13 @@ const SESSION_STORAGE_KEY = "edge-security-session-id";
 
 let API_BASE = null;
 
+function normalizeApiBase(value) {
+  if (!value || typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+  return `https://${trimmed}`;
+}
+
 async function getApiBase() {
   if (API_BASE) return API_BASE;
   try {
@@ -9,12 +16,13 @@ async function getApiBase() {
     if (res.ok) {
       const data = await res.json();
       if (data.API_BASE) {
-        API_BASE = data.API_BASE;
+        API_BASE = normalizeApiBase(data.API_BASE);
         return API_BASE;
       }
     }
   } catch (_) {}
-  API_BASE = (typeof window !== "undefined" && window.EDGE_SECURITY_API_BASE) || window.location.origin;
+  const fallback = (typeof window !== "undefined" && window.EDGE_SECURITY_API_BASE) || window.location.origin;
+  API_BASE = normalizeApiBase(fallback) || fallback;
   return API_BASE;
 }
 
