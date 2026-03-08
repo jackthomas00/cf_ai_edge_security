@@ -11,7 +11,7 @@ The intended deployment model is:
 - **Durable Objects** store per-session memory for the Worker API.
 - **Workers AI** is called by the Durable Object for inference.
 
-The frontend is configured to call the Worker API via `pages/config.js`, which sets `API_BASE`.
+The frontend fetches `API_BASE` from a Pages Function (`/api/config`) that reads the `EDGE_SECURITY_API_BASE` env var. Set this variable in your Pages project (Settings → Variables and Secrets) to your Worker URL (e.g. `https://cf-ai-edge-security.<account>.workers.dev`).
 
 ## How To Use
 
@@ -42,15 +42,13 @@ npx wrangler login
 npm run dev
 ```
 
-4. Point `pages/config.js` at the Worker origin if the frontend is being served from a different origin.
+4. For local frontend testing, set the Worker origin before loading the app (e.g. add to `index.html` before the app script):
 
-Example:
-
-```js
-window.EDGE_SECURITY_API_BASE = "http://127.0.0.1:8787";
+```html
+<script>window.EDGE_SECURITY_API_BASE = "http://127.0.0.1:8787";</script>
 ```
 
-5. Serve the `pages/` directory with Cloudflare Pages or any simple static file server for local frontend testing.
+5. Serve the `pages/` directory with Cloudflare Pages or any simple static file server for local frontend testing. When served locally, `/api/config` will 404, so the app falls back to `window.EDGE_SECURITY_API_BASE` or `window.location.origin`.
 
 ### App Workflow (UI)
 

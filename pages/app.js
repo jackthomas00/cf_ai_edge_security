@@ -1,7 +1,22 @@
-import config from "./config.js";
-
-const API_BASE = config.API_BASE;
 const SESSION_STORAGE_KEY = "edge-security-session-id";
+
+let API_BASE = null;
+
+async function getApiBase() {
+  if (API_BASE) return API_BASE;
+  try {
+    const res = await fetch("/api/config");
+    if (res.ok) {
+      const data = await res.json();
+      if (data.API_BASE) {
+        API_BASE = data.API_BASE;
+        return API_BASE;
+      }
+    }
+  } catch (_) {}
+  API_BASE = (typeof window !== "undefined" && window.EDGE_SECURITY_API_BASE) || window.location.origin;
+  return API_BASE;
+}
 
 let sessionId = localStorage.getItem(SESSION_STORAGE_KEY);
 
@@ -86,6 +101,7 @@ function escapeHtml(text) {
 }
 
 async function handleAnalyze() {
+  await getApiBase();
   const input = document.getElementById("log-input");
   const text = input.value.trim();
   if (!text) return;
@@ -107,6 +123,7 @@ async function handleAnalyze() {
 }
 
 async function handleNewSession() {
+  await getApiBase();
   setSessionId(null);
   renderConversation([]);
   try {
@@ -117,6 +134,7 @@ async function handleNewSession() {
 }
 
 async function init() {
+  await getApiBase();
   try {
     const rehydrated = await rehydrateSession();
     if (rehydrated) return;
