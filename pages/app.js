@@ -1,4 +1,6 @@
-const API_BASE = globalThis.EDGE_SECURITY_API_BASE ?? "";
+import config from "./config.js";
+
+const API_BASE = config.API_BASE;
 const SESSION_STORAGE_KEY = "edge-security-session-id";
 
 let sessionId = localStorage.getItem(SESSION_STORAGE_KEY);

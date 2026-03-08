@@ -1,1 +1,3 @@
-window.EDGE_SECURITY_API_BASE = "https://cf-ai-edge-security.jack-cc0.workers.dev";
+const API_BASE = env.EDGE_SECURITY_API_BASE;
+
+export default { API_BASE };

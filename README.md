@@ -11,7 +11,7 @@ The intended deployment model is:
 - **Durable Objects** store per-session memory for the Worker API.
 - **Workers AI** is called by the Durable Object for inference.
 
-The frontend is configured to call the Worker API via `pages/config.js`, which sets `window.EDGE_SECURITY_API_BASE`.
+The frontend is configured to call the Worker API via `pages/config.js`, which sets `API_BASE`.
 
 ## How To Use
 
